@@ -4,7 +4,6 @@ const Type = require('../models/type'); // Assuming you have a Type model
 const router = express.Router();
 
 
-
 // Route to get all types
 router.get('/types', async function (req, res, next) {
     try {

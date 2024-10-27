@@ -10,6 +10,7 @@ var indexRouter = require('./routes/index');
 var pokemonRouter = require('./routes/pokemonRoutes');
 var typeRouter = require('./routes/typeRoutes');
 //var usersRouter = require('./routes/users');
+var moveRouter = require('./routes/moveRoutes');
 
 var app = express();
 
@@ -26,6 +27,7 @@ app.use(cors());
 app.use('/', indexRouter);
 app.use('/api/pokemon/', pokemonRouter);
 app.use('/api/type/', typeRouter);
+app.use('/api/moves/', moveRouter);
 database.connect();
 
 // catch 404 and forward to error handler
