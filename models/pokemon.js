@@ -40,6 +40,17 @@ const moveSchema = new Schema({
     }
 });
 
+const evolutionSchema = new Schema({
+    to: {
+        type: String,
+        required: true
+    },
+    method: {
+        type: String,
+        required: true
+    }
+});
+
 const pokemonSchema = new Schema({
     name: {
         type: String,
@@ -100,7 +111,7 @@ const pokemonSchema = new Schema({
         required: true
     },
     evolutions: {
-        type: [String],
+        type: [evolutionSchema],
         required: true
     }
 });

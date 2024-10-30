@@ -9,6 +9,8 @@ const database = require('./config/ConnectDB');
 var indexRouter = require('./routes/index');
 var pokemonRouter = require('./routes/pokemonRoutes');
 var typeRouter = require('./routes/typeRoutes');
+var evolutionRouter = require('./routes/evolutionRoutes');
+
 //var usersRouter = require('./routes/users');
 
 var app = express();
@@ -26,6 +28,7 @@ app.use(cors());
 app.use('/', indexRouter);
 app.use('/api/pokemon/', pokemonRouter);
 app.use('/api/type/', typeRouter);
+app.use('/api/evolution/', evolutionRouter);
 database.connect();
 
 // catch 404 and forward to error handler
