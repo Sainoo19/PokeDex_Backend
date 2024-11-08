@@ -39,7 +39,7 @@ router.get('/random', async function (req, res, next) {
         res.status(500).json({ message: error.message });
     }
 });
-router.get('/', async function (req, res, next) {
+router.get('/all/', async function (req, res, next) {
     try {
         const allPokemon = await Pokemon.find();
         console.log(allPokemon);
@@ -103,5 +103,89 @@ router.get('/type/:name', async function (req, res, next) {
         res.status(500).json({ message: error.message });
     }
 });
+
+router.get('/filter/types', async function (req, res, next) {
+    try {
+        const types = req.query.types.split(',');
+        const pokemons = await Pokemon.find({ type: { $all: types } });
+        if (pokemons.length === 0) {
+            return res.status(404).json({ message: 'No Pokemon found with these types' });
+        }
+        res.status(200).json(pokemons);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
+router.get('/filter/weakness/:type', async function (req, res) {
+    try {
+        const type = await Type.findOne({ name: req.params.type });
+        if (!type) {
+            return res.status(404).json({ message: 'Type not found' });
+        }
+        const weaknessTypes = type.weaknesses;
+        const pokemonList = await Pokemon.find({ type: { $in: weaknessTypes } });
+        if (pokemonList.length === 0) {
+            return res.status(404).json({ message: 'No Pokemon found with this weakness type' });
+        }
+        res.status(200).json(pokemonList);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+router.get('/filter/height', async function (req, res, next) {
+    try {
+        const heightCategory = req.query.category;
+        let heightFilter;
+
+        switch (heightCategory) {
+            case 'small':
+                heightFilter = { height: { $lte: 1 } };
+                break;
+            case 'medium':
+                heightFilter = { height: { $gt: 1, $lte: 3 } };
+                break;
+            case 'large':
+                heightFilter = { height: { $gt: 3 } };
+                break;
+            default:
+                return res.status(400).json({ message: 'Invalid height category' });
+        }
+
+        const pokemons = await Pokemon.find(heightFilter);
+        res.status(200).json(pokemons);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+router.get('/filter/weight', async function (req, res, next) {
+    try {
+        const weightCategory = req.query.category;
+        let weightFilter;
+
+        switch (weightCategory) {
+            case 'small':
+                weightFilter = { weight: { $lte: 100 } };
+                break;
+            case 'medium':
+                weightFilter = { weight: { $gt: 100, $lte: 300 } };
+                break;
+            case 'large':
+                weightFilter = { weight: { $gt: 300 } };
+                break;
+            default:
+                return res.status(400).json({ message: 'Invalid weight category' });
+        }
+
+        const pokemons = await Pokemon.find(weightFilter);
+        res.status(200).json(pokemons);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 
 module.exports = router;
