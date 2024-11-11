@@ -13,6 +13,7 @@ var evolutionRouter = require('./routes/evolutionRoutes');
 var abilitiesRouter = require('./routes/abilitiesRoutes');
 
 //var usersRouter = require('./routes/users');
+var moveRouter = require('./routes/moveRoutes');
 
 var app = express();
 
@@ -31,6 +32,7 @@ app.use(cors({
 app.use('/', indexRouter);
 app.use('/api/pokemon/', pokemonRouter);
 app.use('/api/type/', typeRouter);
+app.use('/api/moves/', moveRouter);
 app.use('/api/evolution/', evolutionRouter);
 app.use('/api/abilities/', abilitiesRouter);
 database.connect();
