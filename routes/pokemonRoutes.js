@@ -14,6 +14,31 @@ router.post('/', async function (req, res, next) {
         res.status(400).json({ message: error.message });
     }
 });
+// Endpoint to fetch all Pokémon
+router.get('/', async (req, res) => {
+    try {
+        const pokemons = await Pokemon.find();
+        res.status(200).json(pokemons);
+    } catch (error) {
+        console.error('Error fetching Pokémon:', error.message);
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Endpoint to fetch Pokémon by name
+router.get('/name/:name', async (req, res) => {
+    try {
+        const pokemon = await Pokemon.findOne({ name: req.params.name });
+        if (!pokemon) {
+            return res.status(404).json({ message: 'Pokémon not found' });
+        }
+        res.status(200).json(pokemon);
+    } catch (error) {
+        console.error('Error fetching Pokémon:', error.message);
+        res.status(500).json({ message: error.message });
+    }
+});
+
 
 router.delete('/:id', async function (req, res, next) {
     try {
@@ -120,7 +145,7 @@ router.get('/all', async function (req, res, next) {
 
 router.get('/top-attack', async function (req, res, next) {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 7;
     const skip = (page - 1) * limit;
 
     try {
@@ -154,6 +179,68 @@ router.get('/type/:name', async function (req, res, next) {
         res.status(500).json({ message: error.message });
     }
 });
+
+// Endpoint lấy base_stats --PHẦN MỚI THÊM (VY)
+router.get('/:id/stats', async function (req, res, next) {
+    try {
+        // Tìm Pokémon theo ID và chỉ lấy phần base_stats
+        const pokemon = await Pokemon.findById(req.params.id, 'base_stats');
+        if (!pokemon) {
+            return res.status(404).json({ message: 'Pokemon not found' });
+        }
+        res.status(200).json(pokemon.base_stats);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Endpoint để lấy weaknesses của Pokemon theo tên --PHẦN MỚI THÊM (VY)
+router.get('/:name/weaknesses', async function (req, res) {
+    try {
+        // Tìm Pokémon theo tên
+        const pokemon = await Pokemon.findOne({ name: req.params.name });
+
+        if (!pokemon) {
+            return res.status(404).json({ message: 'Pokemon not found' });
+        }
+
+        // Lấy danh sách các loại của Pokémon
+        const pokemonTypes = pokemon.type;
+
+        // Tìm weaknesses từ bảng Type dựa trên các loại của Pokémon
+        const weaknesses = await Type.find({ name: { $in: pokemonTypes } })
+            .select('weaknesses -_id'); // Chỉ lấy trường weaknesses
+
+        // Gộp tất cả weaknesses từ nhiều loại thành một mảng duy nhất
+        const combinedWeaknesses = weaknesses.flatMap(type => type.weaknesses);
+
+        res.status(200).json({ weaknesses: combinedWeaknesses });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
+// Endpoint để lấy moves của Pokemon theo tên --PHẦN MỚI THÊM (VY)
+router.get('/:name/moves', async function (req, res) {
+    try {
+        // Tìm Pokémon theo tên
+        const pokemon = await Pokemon.findOne({ name: req.params.name });
+
+        if (!pokemon) {
+            return res.status(404).json({ message: 'Pokemon not found' });
+        }
+
+        // Lấy danh sách moves từ Pokémon
+        const moves = pokemon.moves;
+
+        res.status(200).json({ moves });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
 
 
 
