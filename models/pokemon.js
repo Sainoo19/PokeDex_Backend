@@ -114,7 +114,7 @@ const pokemonSchema = new Schema({
         type: [evolutionSchema],
         required: true
     }
-});
+}, { versionKey: false }); //Nhi thêm để tắt version key Mongo tự động thêm
 
 const Pokemon = mongoose.model('Pokemon', pokemonSchema);
 
