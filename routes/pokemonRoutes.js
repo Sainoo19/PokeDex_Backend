@@ -14,6 +14,47 @@ router.post('/', async function (req, res, next) {
         res.status(400).json({ message: error.message });
     }
 });
+//Nhi note B4 delete poke test
+// router.delete('/:name', async function (req, res) {
+//     try {
+//         const { name } = req.params; // Lấy `name` từ URL
+
+//         // Tìm và xóa Pokémon theo `name`
+//         const deletedPokemon = await Pokemon.findOneAndDelete({ name });
+
+//         if (!deletedPokemon) {
+//             return res.status(404).json({ message: `Pokemon with name "${name}" not found.` });
+//         }
+
+//         res.status(200).json({ message: `Pokemon "${name}" deleted successfully.` });
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
+
+//Nhi note B4 check name
+router.get('/check-name', async (req, res) => {
+    const { name } = req.query;
+  
+    if (!name) {
+      return res.status(400).json({ message: 'Name is required.' });
+    }
+  
+    try {
+      // Kiểm tra nếu tên đã tồn tại trong cơ sở dữ liệu
+      const existingPokemon = await Pokemon.findOne({ name });
+  
+      if (existingPokemon) {
+        return res.json({ exists: true });
+      } else {
+        return res.json({ exists: false });
+      }
+    } catch (error) {
+      console.error('Error checking name:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
 // Endpoint to fetch all Pokémon
 router.get('/', async (req, res) => {
     try {
@@ -239,6 +280,7 @@ router.get('/:name/moves', async function (req, res) {
         res.status(500).json({ message: error.message });
     }
 });
+  
 
 
 

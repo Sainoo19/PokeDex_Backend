@@ -13,6 +13,16 @@ router.get('/types', async function (req, res, next) {
         res.status(500).json({ message: error.message });
     }
 });
+// //Nhi note tìm name type
+// router.get('/name', async (req, res) => {
+//     try {
+//         const pokemons = await Type.find();
+//         res.status(200).json(pokemons);
+//     } catch (error) {
+//         console.error('Error fetching Pokémon:', error.message);
+//         res.status(500).json({ message: error.message });
+//     }
+// });
 
 // Route to get weaknesses of a specific type
 router.get('/weaknesses/:name', async function (req, res, next) {
