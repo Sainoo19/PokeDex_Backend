@@ -240,11 +240,25 @@ router.get('/:name/moves', async function (req, res) {
     }
 });
 
+//Thư note B3
+router.put('/:id', async function (req, res, next) {
+    try {
+        //Tìm và cập nhật Pokemon theo id
+        const updatePokemon = await Pokemon.findByIdAndUpdate(
+            req.params.id, //ID của Pokémon cần cập nhật
+            req.body, //Dữ liệu cập nhật
+            { new: true, runValidators: true } //Trả về pokemon đã cập nhật và kiểm tra dữ liệu
+        );
 
+        if (!updatePokemon) {
+            return res.status(404).json({ message: 'Pokemon not found' });
+        }
 
-
-
-
-
+        res.status(200).json(updatePokemon);
+    } catch (error) {
+        console.error('Error updating Pokemon:', error.message);
+        res.status(500).json({ message: error.message });
+    }
+})
 
 module.exports = router;
